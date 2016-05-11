@@ -14,39 +14,7 @@ import Photos
 **/
 extension PHPhotoLibrary {
     
-    // MARK: Public methods
-    /**
-     * Search Collection By Local Stored Identifeir
-     */
-    @objc
-    public final class func findCollectionById (let folderIdentifier: String, let collectionType: PHAssetCollectionType) -> PHAssetCollection? {
-        var collection: PHAssetCollection?
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "localIdentifier=%@", folderIdentifier)
-        collection = PHAssetCollection.fetchAssetCollectionsWithType(collectionType, subtype: .Any, options: fetchOptions).firstObject as? PHAssetCollection
-        
-        return collection
-    }
-    
-    /**
-    * Finds collection By Id
-    */
-    @objc
-    public final class func findCollectionById (let folderIdentifier: String) -> NSFastEnumeration? {
-        return PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([folderIdentifier], options: nil)
-    }
-    
-    /**
-    * Finds collection By Name
-    */
-    @objc
-    public final class func findCollectionByName (let folderName: String) -> NSFastEnumeration? {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "title=%@", argumentArray: [folderName])
-        
-        return PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
-    }
-    
+    // MARK: Public methods    
     /**
     * Fetch All Collections
     */
@@ -114,7 +82,7 @@ extension PHPhotoLibrary {
     
     // TODO: MOVE REQUEST OPTIONS AS ARGUMENTS
     /**
-     * Gets an original image from an asset object
+     * Retrieves an original image from an asset object
      */
     @objc
     public class func imageFromAsset(let asset: PHAsset, let size: CGSize, completion: (image: UIImage?, info: [NSObject: AnyObject]?) -> Void) {
@@ -134,24 +102,28 @@ extension PHPhotoLibrary {
        }
     }
     
+    /**
+    * Retrieves a video from an Asset object
+    */
     @objc
     public class func videoFromAsset(let asset: PHAsset, completion: (avplayerItem: AVPlayerItem?, info: [NSObject: AnyObject]?) -> Void) {
-        if asset.mediaType == .Video {
-            let requestOptions = PHVideoRequestOptions()
-            requestOptions.deliveryMode = .MediumQualityFormat
-            
-            PHImageManager.defaultManager().requestPlayerItemForVideo(asset, options: requestOptions, resultHandler: { (avplayerItem, info) in
-                completion(avplayerItem: avplayerItem, info: info)
-            })
-        } else {
-            completion(avplayerItem: nil, info: ["error": "Asset is not of an image type."])
+        checkAuthorizationStatus { (authorizationStatus, error) in
+            if asset.mediaType == .Video {
+                let requestOptions = PHVideoRequestOptions()
+                requestOptions.deliveryMode = .HighQualityFormat
+                
+                PHImageManager.defaultManager().requestPlayerItemForVideo(asset, options: requestOptions, resultHandler: { (avplayerItem, info) in
+                    completion(avplayerItem: avplayerItem, info: info)
+                })
+            } else {
+                completion(avplayerItem: nil, info: ["error": "Asset is not of an image type."])
+            }
         }
     }
     
-    // MARK: Authorization status observer
     /**
-    * Check Authorization status
-    */
+     * Check Authorization status
+     */
     @objc
     public final class func checkAuthorizationStatus(completion: (authorizationStatus: PHAuthorizationStatus, error: NSError?) -> Void) {
         
@@ -180,5 +152,18 @@ extension PHPhotoLibrary {
             
         }
     }
-
+    
+    // MARK: Private Helpers
+    /**
+     * Search Collection By Local Stored Identifeir
+     */
+    @objc
+    private final class func findCollectionById (let folderIdentifier: String, let collectionType: PHAssetCollectionType) -> PHAssetCollection? {
+        var collection: PHAssetCollection?
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "localIdentifier=%@", folderIdentifier)
+        collection = PHAssetCollection.fetchAssetCollectionsWithType(collectionType, subtype: .Any, options: fetchOptions).firstObject as? PHAssetCollection
+        
+        return collection
+    }
 }

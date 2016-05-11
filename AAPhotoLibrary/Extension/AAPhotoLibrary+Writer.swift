@@ -110,6 +110,25 @@ extension PHPhotoLibrary {
     
     // MARK: Private helper methods
     
+    /** //TODO: Move method to public as users would want to find one particular collection
+     * Finds collection By Id
+     */
+    @objc
+    private final class func findCollectionById (let folderIdentifier: String) -> NSFastEnumeration? {
+        return PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([folderIdentifier], options: nil)
+    }
+    
+    /**
+     * Finds collection By Name
+     */
+    @objc
+    private final class func findCollectionByName (let folderName: String) -> NSFastEnumeration? {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title=%@", argumentArray: [folderName])
+        
+        return PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
+    }
+    
     /**
      * Decide what to save based on authorization status
      */
