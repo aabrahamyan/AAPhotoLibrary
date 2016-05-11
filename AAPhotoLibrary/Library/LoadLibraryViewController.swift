@@ -22,7 +22,7 @@ class LoadLibraryViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
-        PHPhotoLibrary.fetchCollectionsByType(.Album, includeHiddenAssets: false, sortByName: true) { (fetchResults, error) in
+        PHPhotoLibrary.fetchCollectionsByType(.SmartAlbum, includeHiddenAssets: false, sortByName: true) { (fetchResults, error) in
             if error == nil {
                 fetchResults?.enumerateObjectsUsingBlock({ (collection, index, stop) in
                 

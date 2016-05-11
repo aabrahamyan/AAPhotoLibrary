@@ -134,6 +134,20 @@ extension PHPhotoLibrary {
        }
     }
     
+    @objc
+    public class func videoFromAsset(let asset: PHAsset, completion: (avplayerItem: AVPlayerItem?, info: [NSObject: AnyObject]?) -> Void) {
+        if asset.mediaType == .Video {
+            let requestOptions = PHVideoRequestOptions()
+            requestOptions.deliveryMode = .MediumQualityFormat
+            
+            PHImageManager.defaultManager().requestPlayerItemForVideo(asset, options: requestOptions, resultHandler: { (avplayerItem, info) in
+                completion(avplayerItem: avplayerItem, info: info)
+            })
+        } else {
+            completion(avplayerItem: nil, info: ["error": "Asset is not of an image type."])
+        }
+    }
+    
     // MARK: Authorization status observer
     /**
     * Check Authorization status

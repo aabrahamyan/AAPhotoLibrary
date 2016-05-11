@@ -18,14 +18,37 @@ class AAPhotoDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        } catch {
+            print(error)
+        }
         activityIndicator.startAnimating()
-        PHPhotoLibrary.imageFromAsset(imageAsset!, size: PHImageManagerMaximumSize) { (image, info) in
-            if image != nil {
-                self.imageView.image = image
+        
+        if imageAsset?.mediaType == .Image {
+        
+            PHPhotoLibrary.imageFromAsset(imageAsset!, size: PHImageManagerMaximumSize) { (image, info) in
+                if image != nil {
+                    self.imageView.image = image
+                }
+                
+                self.activityIndicator.stopAnimating()
             }
-            
-            self.activityIndicator.stopAnimating()
+        } else if imageAsset?.mediaType == .Video {
+            imageView.hidden = true
+            PHPhotoLibrary.videoFromAsset(imageAsset!, completion: { (avplayerItem, info) in
+                
+                dispatch_async(dispatch_get_main_queue(), { 
+                    let avPlayer = AVPlayer(playerItem: avplayerItem!)
+                    let avPlayerLayer = AVPlayerLayer(player: avPlayer)
+                    avPlayerLayer.frame = self.view.frame
+                    print(self.view.bounds)
+                    self.view.layer.addSublayer(avPlayerLayer)
+                    avPlayer.seekToTime(kCMTimeZero)
+                    self.activityIndicator.stopAnimating()
+                    avPlayer.play()
+                })
+            })
         }
     }
 

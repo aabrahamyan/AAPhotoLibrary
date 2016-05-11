@@ -21,7 +21,7 @@ class AALibraryAssetsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        PHPhotoLibrary.fetchAllItemsFromCollection(.Album, collectionId: collectionId!, sortByDate: true) { (fetchResult, error) in
+        PHPhotoLibrary.fetchAllItemsFromCollection(.SmartAlbum, collectionId: collectionId!, sortByDate: true) { (fetchResult, error) in
             
             if error == nil {
                 fetchResult!.enumerateObjectsUsingBlock({ (asset, index, stop) in
@@ -64,11 +64,31 @@ extension AALibraryAssetsViewController: UICollectionViewDataSource, UICollectio
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(collectionCellIdentifeir, forIndexPath: indexPath) as! AAAssetCollectionViewCell
         let asset = dataSource[indexPath.row]
         
-        PHPhotoLibrary.imageFromAsset(asset, size: CGSize(width: 300, height: 300)) { (image, info) in
-            
-            if image != nil {
-                cell.imageView.image = image
+        if asset.mediaType == .Image {
+            PHPhotoLibrary.imageFromAsset(asset, size: CGSize(width: 300, height: 300)) { (image, info) in
+                
+                if image != nil {
+                    cell.imageView.image = image
+                }
             }
+        } else if asset.mediaType == .Video {
+        
+            PHPhotoLibrary.videoFromAsset(asset, completion: { (avplayerItem, info) in
+                if avplayerItem != nil {
+                    let imageGen = AVAssetImageGenerator(asset: avplayerItem!.asset)
+                    let time = CMTimeMakeWithSeconds(1.0, 1)
+                    var actualTime: CMTime = CMTimeMake(0,0)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        do {
+                            let image = try imageGen.copyCGImageAtTime(time, actualTime: &actualTime)
+                            cell.imageView.image = UIImage(CGImage: image)
+                        } catch {
+                            print("Problem copying image from timeframe. Video file could be corrupted.")
+                        }
+                    })
+                }
+                
+            })
         }
         
         return cell
