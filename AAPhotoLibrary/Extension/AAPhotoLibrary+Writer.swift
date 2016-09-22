@@ -89,7 +89,7 @@ extension PHPhotoLibrary {
     
     /**
     * Removes folder by Name
-    * WARNING: Will remove first found folder of that name. Won't remove any folder from SmartAlbum. It is recommended that you use 'deleteFolderById' instead.
+    * WARNING - Will remove first found folder of that name. Won't remove any folder from SmartAlbum. It is recommended that you use 'deleteFolderById' instead.
     */
     @objc
     public class func deleteFolderByName (let folderName: String, let completion: (success: Bool, error: NSError?) -> Void) {
@@ -110,11 +110,11 @@ extension PHPhotoLibrary {
     
     // MARK: Private helper methods
     
-    /** //TODO: Move method to public as users would want to find one particular collection
+    /** 
      * Finds collection By Id
      */
     @objc
-    private final class func findCollectionById (let folderIdentifier: String) -> NSFastEnumeration? {
+    public final class func findCollectionById (let folderIdentifier: String) -> NSFastEnumeration? {
         return PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([folderIdentifier], options: nil)
     }
     
