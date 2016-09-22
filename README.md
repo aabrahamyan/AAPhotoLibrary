@@ -19,16 +19,16 @@ Minimum Deployment Target iOS 8.0
 AAPhotoLibrary is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
+```ruby
+pod "AAPhotoLibrary"
+```
+
 ## Manual Installation
 Just copy 3 files (AAPhotoLibrary+Reader, AAPhotoLibrary+Writer, AAPLErrorHandler) into your project.
 
 # License
 
 AAPhotoLibrary is available under the MIT license. See the LICENSE file for more info.
-
-```ruby
-pod "AAPhotoLibrary"
-```
 
 ## Author
 
