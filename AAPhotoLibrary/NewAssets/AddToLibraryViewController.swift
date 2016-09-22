@@ -14,12 +14,12 @@ class AddToLibraryViewController: UIViewController {
     var currentCell: NewAssetImageCell?
     var currentPage:Int = 0
     @IBOutlet weak var collectionView: UICollectionView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -41,7 +41,7 @@ class AddToLibraryViewController: UIViewController {
     }
 }
 
-extension AddToLibraryViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension AddToLibraryViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
@@ -56,6 +56,10 @@ extension AddToLibraryViewController: UICollectionViewDataSource, UICollectionVi
         cell.imageView.image = UIImage(named: "\(indexPath.row)")
         
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return CGSize(width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.width)
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
