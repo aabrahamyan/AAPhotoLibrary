@@ -80,8 +80,9 @@ extension PHPhotoLibrary {
         }
     }
     
-    // TODO: MOVE REQUEST OPTIONS AS ARGUMENTS
+    
     /**
+     * TODO: MOVE REQUEST OPTIONS AS ARGUMENTS
      * Retrieves an original image from an asset object
      */
     @objc
