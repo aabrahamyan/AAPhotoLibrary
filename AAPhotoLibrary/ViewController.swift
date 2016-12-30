@@ -28,11 +28,11 @@ class ViewController: UIViewController {
     //com.load.lib
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        print(segue.identifier)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print(segue.identifier!)
     }
     
-    @IBAction func removeItems(sender: AnyObject) {
+    @IBAction func removeItems(_ sender: AnyObject) {
         
         /*PHPhotoLibrary.deleteFolderByName("AAPhotoLibrary") { (success, error) in
             

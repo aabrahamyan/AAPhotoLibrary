@@ -25,10 +25,10 @@ class AddToLibraryViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func saveImage(sender: AnyObject) {
+    @IBAction func saveImage(_ sender: AnyObject) {
         
         if currentCell == nil {
-            currentCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? NewAssetImageCell
+            currentCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? NewAssetImageCell
         }
         
         if let cell = currentCell {
@@ -43,28 +43,28 @@ class AddToLibraryViewController: UIViewController {
 
 extension AddToLibraryViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 5
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("newAssetCell", forIndexPath: indexPath) as! NewAssetImageCell
-        cell.imageView.image = UIImage(named: "\(indexPath.row)")
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "newAssetCell", for: indexPath) as! NewAssetImageCell
+        cell.imageView.image = UIImage(named: "\((indexPath as NSIndexPath).row)")
         
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.width)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageWidth = collectionView.frame.size.width
         currentPage = Int(collectionView.contentOffset.x / pageWidth)
-        currentCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forRow: currentPage, inSection: 0)) as? NewAssetImageCell
+        currentCell = collectionView.cellForItem(at: IndexPath(row: currentPage, section: 0)) as? NewAssetImageCell
     }
 }

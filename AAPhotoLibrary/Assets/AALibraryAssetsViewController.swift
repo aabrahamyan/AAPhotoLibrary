@@ -21,12 +21,12 @@ class AALibraryAssetsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        PHPhotoLibrary.fetchAllItemsFromCollection(.SmartAlbum, collectionId: collectionId!, sortByDate: true) { (fetchResult, error) in
+        PHPhotoLibrary.fetchAllItemsFromCollection(.smartAlbum, collectionId: collectionId!, sortByDate: true) { (fetchResult, error) in
             
             if error == nil {
-                fetchResult!.enumerateObjectsUsingBlock({ (asset, index, stop) in
-                    if !stop.memory {
-                        self.dataSource.append(asset as! PHAsset)
+                fetchResult!.enumerateObjects({ (asset, index, stop) in
+                    if !stop.pointee.boolValue {
+                        self.dataSource.append(asset)
                     }
                 })
             }
@@ -52,36 +52,36 @@ class AALibraryAssetsViewController: UIViewController {
 
 extension AALibraryAssetsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(collectionCellIdentifeir, forIndexPath: indexPath) as! AAAssetCollectionViewCell
-        let asset = dataSource[indexPath.row]
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionCellIdentifeir, for: indexPath) as! AAAssetCollectionViewCell
+        let asset = dataSource[(indexPath as NSIndexPath).row]
         
-        if asset.mediaType == .Image {
+        if asset.mediaType == .image {
             PHPhotoLibrary.imageFromAsset(asset, size: CGSize(width: 300, height: 300)) { (image, info) in
                 
                 if image != nil {
                     cell.imageView.image = image
                 }
             }
-        } else if asset.mediaType == .Video {
+        } else if asset.mediaType == .video {
         
             PHPhotoLibrary.videoFromAsset(asset, completion: { (avplayerItem, info) in
                 if avplayerItem != nil {
                     let imageGen = AVAssetImageGenerator(asset: avplayerItem!.asset)
                     let time = CMTimeMakeWithSeconds(1.0, 1)
                     var actualTime: CMTime = CMTimeMake(0,0)
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         do {
-                            let image = try imageGen.copyCGImageAtTime(time, actualTime: &actualTime)
-                            cell.imageView.image = UIImage(CGImage: image)
+                            let image = try imageGen.copyCGImage(at: time, actualTime: &actualTime)
+                            cell.imageView.image = UIImage(cgImage: image)
                         } catch {
                             print("Problem copying image from timeframe. Video file could be corrupted.")
                         }
@@ -94,18 +94,18 @@ extension AALibraryAssetsViewController: UICollectionViewDataSource, UICollectio
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        selectedPhotoAsset = dataSource[indexPath.row]
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedPhotoAsset = dataSource[(indexPath as NSIndexPath).row]
         openPhotoDetailView()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let photoDetailVC = segue.destinationViewController as! AAPhotoDetailViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let photoDetailVC = segue.destination as! AAPhotoDetailViewController
         photoDetailVC.imageAsset = selectedPhotoAsset
     }
     
     func openPhotoDetailView(){
-        self.performSegueWithIdentifier("com.load.photo", sender: nil)
+        self.performSegue(withIdentifier: "com.load.photo", sender: nil)
     }
     
 }

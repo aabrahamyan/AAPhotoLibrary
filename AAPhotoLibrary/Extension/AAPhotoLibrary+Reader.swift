@@ -19,12 +19,12 @@ extension PHPhotoLibrary {
     * Fetch All Collections
     */
     @objc
-    public final class func fetchCollectionsByType(let type:PHAssetCollectionType, let includeHiddenAssets: Bool, let sortByName: Bool, completion: (fetchResults: PHFetchResult?, error: NSError?) -> Void) {
+    public final class func fetchCollectionsByType(_ type:PHAssetCollectionType, includeHiddenAssets: Bool, sortByName: Bool, completion: @escaping (_ fetchResults: PHFetchResult<PHAssetCollection>?, _ error: NSError?) -> Void) {
     
         checkAuthorizationStatus { (authorizationStatus, error) in
             
-            guard authorizationStatus == .Authorized else {
-                completion(fetchResults: nil, error: error)
+            guard authorizationStatus == .authorized else {
+                completion(nil, error)
                 print("Impossible to access the Photo Library, please make sure that you don't expilicitly deneid access or there is no specific parenthal control enabled !")
                 return
             }
@@ -36,8 +36,9 @@ extension PHPhotoLibrary {
                 options.sortDescriptors = [NSSortDescriptor(key: "localizedTitle", ascending: true)]
             }
             
-            let collection = PHAssetCollection.fetchAssetCollectionsWithType(type, subtype: .Any, options: options)
-            completion(fetchResults: collection, error: nil)
+            let collection = PHAssetCollection.fetchAssetCollections(with: type, subtype: .any, options: options)
+            completion(collection, nil)
+            
         }
         
     }
@@ -46,7 +47,7 @@ extension PHPhotoLibrary {
     * Fetches all images from collection
     */
     @objc
-    public final class func fetchAllItemsFromCollection(let collectionType: PHAssetCollectionType, let collectionId: String, sortByDate: Bool, completion: (fetchResult: PHFetchResult?, error: NSError?) -> Void) {
+    public final class func fetchAllItemsFromCollection(_ collectionType: PHAssetCollectionType, collectionId: String, sortByDate: Bool, completion: @escaping (_ fetchResult: PHFetchResult<PHAsset>?, _ error: NSError?) -> Void) {
         
         checkAuthorizationStatus { (authorizationStatus, error) in
             let collection = findCollectionById(collectionId, collectionType: collectionType)
@@ -57,8 +58,8 @@ extension PHPhotoLibrary {
                     options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
                 }
                 
-                let fetchResult = PHAsset.fetchAssetsInAssetCollection(collection!, options: options)
-                completion(fetchResult: fetchResult, error: error)
+                let fetchResult = PHAsset.fetchAssets(in: collection!, options: options)
+                completion(fetchResult, error)
             }
         }
     }
@@ -68,13 +69,13 @@ extension PHPhotoLibrary {
     //PHImageManagerMaximumSize
     */
     @objc
-    public class func imageFromAssetIdentifier(let asstItemIdentifeir: String, let size: CGSize, completion: (image: UIImage?, info:[NSObject: AnyObject]?) -> Void) {
+    public class func imageFromAssetIdentifier(_ asstItemIdentifeir: String, size: CGSize, completion: @escaping (_ image: UIImage?, _ info:[AnyHashable: Any]?) -> Void) {
         checkAuthorizationStatus { (authorizationStatus, error) in
             let options = PHFetchOptions()
             options.predicate = NSPredicate(format: "localIdentifier=%@", asstItemIdentifeir)
-            let fetchResult = PHAsset.fetchAssetsWithOptions(options)
+            let fetchResult = PHAsset.fetchAssets(with: options)
             
-            if let asset = fetchResult.firstObject as? PHAsset {
+            if let asset = fetchResult.firstObject {
                 imageFromAsset(asset, size: size, completion: completion)
             }
         }
@@ -86,19 +87,19 @@ extension PHPhotoLibrary {
      * Retrieves an original image from an asset object
      */
     @objc
-    public class func imageFromAsset(let asset: PHAsset, let size: CGSize, completion: (image: UIImage?, info: [NSObject: AnyObject]?) -> Void) {
+    public class func imageFromAsset(_ asset: PHAsset, size: CGSize, completion: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
        checkAuthorizationStatus { (authorizationStatus, error) in
-        if asset.mediaType == .Image {
+        if asset.mediaType == .image {
             let requestOptions = PHImageRequestOptions()
-            requestOptions.resizeMode = .Exact
-            requestOptions.deliveryMode = .HighQualityFormat
-            requestOptions.synchronous = false
+            requestOptions.resizeMode = .exact
+            requestOptions.deliveryMode = .highQualityFormat
+            requestOptions.isSynchronous = false
             
-            PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: size, contentMode: .Default, options: requestOptions, resultHandler: { (image, info) in
-                completion(image: image, info: info)
+            PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: requestOptions, resultHandler: { (image, info) in
+                completion(image, info)
             })
         } else {
-            completion(image: nil, info: ["error": "Asset is not of an image type."])
+            completion(nil, ["error": "Asset is not of an image type."])
         }
        }
     }
@@ -107,17 +108,17 @@ extension PHPhotoLibrary {
     * Retrieves a video from an Asset object
     */
     @objc
-    public class func videoFromAsset(let asset: PHAsset, completion: (avplayerItem: AVPlayerItem?, info: [NSObject: AnyObject]?) -> Void) {
+    public class func videoFromAsset(_ asset: PHAsset, completion: @escaping (_ avplayerItem: AVPlayerItem?, _ info: [AnyHashable: Any]?) -> Void) {
         checkAuthorizationStatus { (authorizationStatus, error) in
-            if asset.mediaType == .Video {
+            if asset.mediaType == .video {
                 let requestOptions = PHVideoRequestOptions()
-                requestOptions.deliveryMode = .HighQualityFormat
+                requestOptions.deliveryMode = .highQualityFormat
                 
-                PHImageManager.defaultManager().requestPlayerItemForVideo(asset, options: requestOptions, resultHandler: { (avplayerItem, info) in
-                    completion(avplayerItem: avplayerItem, info: info)
+                PHImageManager.default().requestPlayerItem(forVideo: asset, options: requestOptions, resultHandler: { (avplayerItem, info) in
+                    completion(avplayerItem, info)
                 })
             } else {
-                completion(avplayerItem: nil, info: ["error": "Asset is not of an image type."])
+                completion(nil, ["error": "Asset is not of an image type."])
             }
         }
     }
@@ -126,29 +127,29 @@ extension PHPhotoLibrary {
      * Check Authorization status
      */
     @objc
-    public final class func checkAuthorizationStatus(completion: (authorizationStatus: PHAuthorizationStatus, error: NSError?) -> Void) {
+    public final class func checkAuthorizationStatus(_ completion: @escaping (_ authorizationStatus: PHAuthorizationStatus, _ error: NSError?) -> Void) {
         
         let status = PHPhotoLibrary.authorizationStatus()
         
         switch (status) {
-        case .NotDetermined:
+        case .notDetermined:
             PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) in
-                completion(authorizationStatus: status, error: AAPLErrorHandler.AAForceAccessDenied.rawValue)
+                completion(status, AAPLErrorHandler.aaForceAccessDenied.rawValue.error)
             })
             break
             
-        case .Authorized:
-            completion(authorizationStatus: status, error: nil)
+        case .authorized:
+            completion(status, nil)
             break
             
-        case .Restricted:
+        case .restricted:
             print("Access is restricted: Maybe parental controls are turned on ?")
-            completion(authorizationStatus: status, error: AAPLErrorHandler.AARestricted.rawValue)
+            completion(status, AAPLErrorHandler.aaRestricted.rawValue.error)
             break
             
-        case .Denied:
+        case .denied:
             print("User denied an access to library")
-            completion(authorizationStatus: status, error: AAPLErrorHandler.AADenied.rawValue)
+            completion(status, AAPLErrorHandler.aaDenied.rawValue.error)
             break
             
         }
@@ -159,11 +160,11 @@ extension PHPhotoLibrary {
      * Search Collection By Local Stored Identifeir
      */
     @objc
-    private final class func findCollectionById (let folderIdentifier: String, let collectionType: PHAssetCollectionType) -> PHAssetCollection? {
+    fileprivate final class func findCollectionById (_ folderIdentifier: String, collectionType: PHAssetCollectionType) -> PHAssetCollection? {
         var collection: PHAssetCollection?
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "localIdentifier=%@", folderIdentifier)
-        collection = PHAssetCollection.fetchAssetCollectionsWithType(collectionType, subtype: .Any, options: fetchOptions).firstObject as? PHAssetCollection
+        collection = PHAssetCollection.fetchAssetCollections(with: collectionType, subtype: .any, options: fetchOptions).firstObject 
         
         return collection
     }

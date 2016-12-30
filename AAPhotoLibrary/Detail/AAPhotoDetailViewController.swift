@@ -25,7 +25,7 @@ class AAPhotoDetailViewController: UIViewController {
         }
         activityIndicator.startAnimating()
         
-        if imageAsset?.mediaType == .Image {
+        if imageAsset?.mediaType == .image {
         
             PHPhotoLibrary.imageFromAsset(imageAsset!, size: PHImageManagerMaximumSize) { (image, info) in
                 if image != nil {
@@ -34,17 +34,17 @@ class AAPhotoDetailViewController: UIViewController {
                 
                 self.activityIndicator.stopAnimating()
             }
-        } else if imageAsset?.mediaType == .Video {
-            imageView.hidden = true
+        } else if imageAsset?.mediaType == .video {
+            imageView.isHidden = true
             PHPhotoLibrary.videoFromAsset(imageAsset!, completion: { (avplayerItem, info) in
                 
-                dispatch_async(dispatch_get_main_queue(), { 
+                DispatchQueue.main.async(execute: { 
                     let avPlayer = AVPlayer(playerItem: avplayerItem!)
                     let avPlayerLayer = AVPlayerLayer(player: avPlayer)
                     avPlayerLayer.frame = self.view.frame
                     print(self.view.bounds)
                     self.view.layer.addSublayer(avPlayerLayer)
-                    avPlayer.seekToTime(kCMTimeZero)
+                    avPlayer.seek(to: kCMTimeZero)
                     self.activityIndicator.stopAnimating()
                     avPlayer.play()
                 })

@@ -12,7 +12,7 @@ class NewAssetImageCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
-    @IBAction func saveImage(sender: AnyObject) {
+    @IBAction func saveImage(_ sender: AnyObject) {
         
     }
 }
