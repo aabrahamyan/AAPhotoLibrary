@@ -34,3 +34,7 @@ AAPhotoLibrary is available under the MIT license. See the LICENSE file for more
 
 Armen Abrahamyan, abrahamyan.armen@gmail.com
 
+## Whats New ?
+
+### Updated for Swift 3.0
+### Bug fixes
