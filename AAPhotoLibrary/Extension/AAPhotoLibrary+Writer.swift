@@ -186,7 +186,8 @@ extension PHPhotoLibrary {
                             fetchResults = PHAsset.fetchAssets(in: collection!, options: nil)
                             if let photoAssets = fetchResults {
                                 let folderChangeRequest = PHAssetCollectionChangeRequest(for: collection!, assets: photoAssets)
-                                folderChangeRequest?.addAssets(placeholder as! NSFastEnumeration)
+                                let array: [PHObjectPlaceholder] = [placeholder]
+                                folderChangeRequest?.addAssets(array as NSFastEnumeration)
                             }
                         }
                     }

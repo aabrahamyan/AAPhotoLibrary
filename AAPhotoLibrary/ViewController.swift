@@ -34,18 +34,17 @@ class ViewController: UIViewController {
     
     @IBAction func removeItems(_ sender: AnyObject) {
         
+        // NOTE: Delete AAPhotoLibrary folder bby name
         /*PHPhotoLibrary.deleteFolderByName("AAPhotoLibrary") { (success, error) in
-            
             print(success)
-            print(error)
         }*/
         
-        /*let arr = ["540F47BA-E968-4A65-B5A9-BB3B79CC3583/L0/001",
-        "D7E0CACD-59BB-43AB-B27C-3F6F4B3617A5/L0/001",
-        "1A8408F9-3E08-4EED-9375-2C100343A9FB/L0/001",
-        "B7F58967-38BF-4C38-818C-BA9EFB3D71DC/L0/001",
-        "49A8022C-3CDA-4C9E-98F9-550C180F1801/L0/001",
-        "95CF8ADF-B407-4C5F-AC21-87129EA80F5D/L0/001"]
+        //NOTE: DELETE ITEMS BY ID
+        /*let arr = ["18523CE5-F955-4C64-B043-F8D10409628D/L0/001",
+        "805E1708-FE2E-4309-B8CD-8DAAB4AB5605/L0/001",
+        "6578FB94-51AC-4E97-85A7-6C8554C4CA90/L0/001",
+        "DDC36C75-C14E-4A6F-8E62-26E70C51FFCF/L0/001"]
+ 
         
         for elem in arr {
             PHPhotoLibrary.deleteItemFromFolder(elem, completion: { (success, error) in
@@ -53,6 +52,7 @@ class ViewController: UIViewController {
             })
         }*/
         
+        // NOTE: Delete folder by id
         /*PHPhotoLibrary.deleteFolderById("83ADA10B-136A-4BC5-9B20-8CBB36B21B24/L0/040") { (success, error) in
             print(success)
         }*/
