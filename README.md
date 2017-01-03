@@ -11,8 +11,8 @@ AAPhotoLibrary is a wrapper over PHPhotoLibrary Photo's framework, which makes i
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
-XCode7+
-Minimum Deployment Target iOS 8.0
+XCode8+
+Minimum Deployment Target iOS 10.0
 
 ## Installation
 
@@ -35,6 +35,5 @@ AAPhotoLibrary is available under the MIT license. See the LICENSE file for more
 Armen Abrahamyan, abrahamyan.armen@gmail.com
 
 ## Whats New ?
-
-### Updated for Swift 3.0
-### Bug fixes
+* Updated for Swift 3.0
+* Bug fixes
