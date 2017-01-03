@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'AAPhotoLibrary'
-  s.version          = '0.0.6'
+  s.version          = '0.1.1'
   s.summary          = 'AAPhotoLibrary is a wrapper over PHPhotoLibrary Photos framework, which makes it easy to add,remove,fetch library items and collections.'
 
 # This description is used to generate tags and improve search results.
@@ -26,9 +26,9 @@ AAPhotoLibrary is a wrapper over PHPhotoLibrary Photos framework, which makes it
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Armen Abrahamyan' => 'abrahamyan.armen@gmail.com' }
   s.source           = { :git => 'https://github.com/aabrahamyan/AAPhotoLibrary.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/VvV_Spawn'
+  s.social_media_url = 'https://twitter.com/VvV_Spawn'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '10.0'
 
   s.source_files = 'AAPhotoLibrary/Extension/**/*'
   
